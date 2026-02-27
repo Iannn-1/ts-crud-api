@@ -2,8 +2,8 @@
   "database": {
     "host": "localhost",
     "port": 3306,
-    "username": "apiuser",
-    "password": "StrongPasswordHere!",
+    "username": "root",
+    "password": "09278401288Ian",
     "database": "typescript_crud_api"
   },
   "jwtSecret": "change-this-in-production-123!"
