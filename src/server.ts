@@ -4,6 +4,10 @@ import cors from 'cors';
 import { errorHandler } from './_middleware/errorHandler';
 import { initialize } from './_helpers/db';
 import usersController from './users/users.controller';
+import departmentsController from './departments/departments.controller';
+import employeesController from './employees/employees.controller';
+import requestsController from './requests/requests.controller';
+import transfersController from './transfers/transfers.controller';
 
 const app: Application = express();
 
@@ -14,6 +18,11 @@ app.use(cors());
 
 // API Routes
 app.use('/users', usersController);
+app.use('/accounts', usersController); // alias for admin UI
+app.use('/depts', departmentsController);
+app.use('/employees', employeesController);
+app.use('/requests', requestsController);
+app.use('/transfers', transfersController);
 
 // Global Error Handler (must be last)
 app.use(errorHandler);

@@ -13,6 +13,7 @@ router.get('/', getAll);
 router.get('/:id', getById);
 router.post('/', createSchema, create);
 router.put('/:id', updateSchema, update);
+router.put('/:id/verify', verifyAccount);
 router.delete('/:id', _delete);
 
 export default router;
@@ -42,6 +43,14 @@ function update(req: Request, res: Response, next: NextFunction): void {
     .catch(next);
 }
 
+function verifyAccount(req: Request, res: Response, next: NextFunction): void {
+  // set verified flag to true (or value provided)
+  const verified = req.body.verified !== undefined ? req.body.verified : true;
+  userService.update(Number(req.params.id), { verified })
+    .then(() => res.json({ message: 'User verification updated' }))
+    .catch(next);
+}
+
 function _delete(req: Request, res: Response, next: NextFunction): void {
   userService.delete(Number(req.params.id))
     .then(() => res.json({ message: 'User deleted' }))
@@ -59,6 +68,7 @@ function createSchema(req: Request, res: Response, next: NextFunction): void {
     password: Joi.string().min(6).required(),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
     phoneNumber: Joi.string().min(10).required(),
+    verified: Joi.boolean().optional(),
   });
   validateRequest(schema)(req, res, next);
 }
@@ -72,7 +82,8 @@ function updateSchema(req: Request, res: Response, next: NextFunction): void {
     email: Joi.string().email().empty(''),
     password: Joi.string().min(6).empty(''),
     confirmPassword: Joi.string().valid(Joi.ref('password')).empty(''),
-    phoneNumber: Joi.string().min(10).empty(''), 
+    phoneNumber: Joi.string().min(10).empty(''),
+    verified: Joi.boolean().optional(),
   }).with('password', 'confirmPassword');
 
   validateRequest(schema)(req, res, next);

@@ -11,6 +11,7 @@ export interface UserAttributes {
     lastName: string;
     role: string;
     phoneNumber: string;    // new field
+    verified: boolean;        // admin flag
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -30,8 +31,20 @@ export class User
     public lastName!: string;
     public role!: string;
     public phoneNumber!: string; // new field
+    public verified!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    static associate(db: any) {
+        db.User.hasOne(db.Employee, {
+            foreignKey: 'userId',
+            as: 'employee'
+        });
+        db.User.hasMany(db.Request, {
+            foreignKey: 'userId',
+            as: 'requests'
+        });  
+    }
 }
 
 
@@ -71,6 +84,11 @@ export default function (sequelize: Sequelize): typeof User {
             phoneNumber: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            verified: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             },
             createdAt: {
                 type: DataTypes.DATE,
